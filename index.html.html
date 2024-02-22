@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body style="display: flex; flex-direction: column; gap: 10px; margin: 20px">
+    <img
+      src="https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"
+      alt="test"
+      id="img_display"
+      style="max-height: 200px; max-width: 200px; object-fit: cover"
+    />
+    <input type="file" id="img_file" accept="image/*" />
+
+    <a id="img_link" href=""></a>
+    <script>
+      $(document).ready(function () {
+        const tyler_endpoint = "https://tylerbert-publ.pockethost.io/";
+        const filepath = "api/files/5c65a4qpm4lno4l/";
+
+        $("#img_file").on("change", function (e) {
+          const formData = new FormData();
+          formData.append("img", this.files[0]);
+
+          $.ajax({
+            url: tyler_endpoint + "api/collections/img_strg/records",
+            type: "POST",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+              // build path
+              const id = response.id;
+              const filename = response.img;
+              // Complete File Path
+              const img_url = tyler_endpoint + filepath + id + "/" + filename;
+              $("#img_display").attr("src", img_url);
+              $("#img_link").attr("href", img_url).text(img_url);
+
+              console.log("Your Image URL is :");
+              console.log(img_url);
+
+              alert("Your Image URL is :" + img_url);
+            },
+            error: function (xhr, status, error) {
+              alert("5MB: JPEG, PNG, WEBP Only");
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
